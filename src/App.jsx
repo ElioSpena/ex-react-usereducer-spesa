@@ -13,6 +13,10 @@ function App() {
     );
   }
 
+  function removeFromCart(product) {
+    setAddedProducts((prev) => prev.filter((p) => p.name !== product.name));
+  }
+
   function addtoCart(product) {
     if (addedProducts.find((p) => p.name === product.name)) {
       updateProductQuantity(product.name);
@@ -25,7 +29,7 @@ function App() {
   return (
     <main>
       <ShowProducts addtoCart={addtoCart} />
-      <Cart addedProducts={addedProducts} />
+      <Cart addedProducts={addedProducts} removeFromCart={removeFromCart} />
     </main>
   );
 }

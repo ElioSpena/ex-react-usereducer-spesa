@@ -1,4 +1,4 @@
-export default function Cart({ addedProducts }) {
+export default function Cart({ addedProducts, removeFromCart }) {
   return (
     <section>
       <h2>Carrello:</h2>
@@ -8,6 +8,9 @@ export default function Cart({ addedProducts }) {
             <h2>{p.name}</h2>
             <span>{p.price} €</span>
             <span>Quantità: {p.quantity}</span>
+            <button onClick={() => removeFromCart(p)}>
+              Rimuovi dal carrello
+            </button>
           </div>
         ))}
     </section>
