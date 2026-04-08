@@ -29,7 +29,9 @@ function App() {
   return (
     <main>
       <ShowProducts addtoCart={addtoCart} />
-      <Cart addedProducts={addedProducts} removeFromCart={removeFromCart} />
+      {addedProducts.length > 0 && (
+        <Cart addedProducts={addedProducts} removeFromCart={removeFromCart} />
+      )}
     </main>
   );
 }
