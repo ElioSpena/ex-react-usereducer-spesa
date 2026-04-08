@@ -1,4 +1,8 @@
-export default function Cart({ addedProducts, removeFromCart }) {
+export default function Cart({
+  addedProducts,
+  removeFromCart,
+  updateProductQuantity,
+}) {
   const totalPrice = addedProducts.reduce(
     (acc, p) => acc + p.price * p.quantity,
     0,
@@ -11,7 +15,13 @@ export default function Cart({ addedProducts, removeFromCart }) {
         <div key={id} className="card">
           <h2>{p.name}</h2>
           <span>{p.price} €</span>
-          <span>Quantità: {p.quantity}</span>
+          <span>Quantità:</span>
+          <input
+            value={p.quantity}
+            onChange={(e) => updateProductQuantity(p.name, e.target.value)}
+            type="number"
+            placeholder="1"
+          />
           <button onClick={() => removeFromCart(p)}>
             Rimuovi dal carrello
           </button>

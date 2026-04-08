@@ -5,10 +5,13 @@ import { useState } from "react";
 function App() {
   const [addedProducts, setAddedProducts] = useState([]);
 
-  function updateProductQuantity(productName) {
+  function updateProductQuantity(productName, value) {
+    let roundValue = Number(value);
+    if (roundValue < 1) roundValue = 1;
+
     setAddedProducts((prev) =>
       prev.map((p) =>
-        p.name === productName ? { ...p, quantity: p.quantity + 1 } : p,
+        p.name === productName ? { ...p, quantity: Math.round(roundValue) } : p,
       ),
     );
   }
@@ -18,8 +21,9 @@ function App() {
   }
 
   function addtoCart(product) {
-    if (addedProducts.find((p) => p.name === product.name)) {
-      updateProductQuantity(product.name);
+    const existingProduct = addedProducts.find((p) => p.name === product.name);
+    if (existingProduct) {
+      updateProductQuantity(product.name, existingProduct.quantity + 1);
       return;
     }
     const newProd = { ...product, quantity: 1 };
@@ -30,7 +34,11 @@ function App() {
     <main>
       <ShowProducts addtoCart={addtoCart} />
       {addedProducts.length > 0 && (
-        <Cart addedProducts={addedProducts} removeFromCart={removeFromCart} />
+        <Cart
+          addedProducts={addedProducts}
+          removeFromCart={removeFromCart}
+          updateProductQuantity={updateProductQuantity}
+        />
       )}
     </main>
   );
