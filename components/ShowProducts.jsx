@@ -1,6 +1,6 @@
 import products from "../data/products";
 
-export default function ShowProducts({ addtoCart }) {
+export default function ShowProducts({ dispatch }) {
   return (
     <section className="products">
       {products.map((p, id) => {
@@ -8,7 +8,9 @@ export default function ShowProducts({ addtoCart }) {
           <div key={id} className="card">
             <h2>{p.name}</h2>
             <span>{p.price} €</span>
-            <button onClick={() => addtoCart(p)}>Aggiungi al carrello</button>
+            <button onClick={() => dispatch({ type: "ADD_ITEM", payload: p })}>
+              Aggiungi al carrello
+            </button>
           </div>
         );
       })}

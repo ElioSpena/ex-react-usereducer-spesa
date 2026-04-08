@@ -1,45 +1,43 @@
 import ShowProducts from "../components/ShowProducts";
 import Cart from "../components/Cart";
-import { useState } from "react";
+import { useReducer } from "react";
 
 function App() {
-  const [addedProducts, setAddedProducts] = useState([]);
+  const [state, dispatch] = useReducer(cartReducer, []);
 
-  function updateProductQuantity(productName, value) {
-    let roundValue = Number(value);
-    if (roundValue < 1) roundValue = 1;
+  function cartReducer(state, action) {
+    switch (action.type) {
+      case "ADD_ITEM":
+        const product = action.payload;
+        const existingProduct = state.find((p) => p.name === product.name);
+        if (existingProduct) {
+          return state.map((p) =>
+            p.name === product.name ? { ...p, quantity: p.quantity + 1 } : p,
+          );
+        }
+        return [...state, { ...product, quantity: 1 }];
 
-    setAddedProducts((prev) =>
-      prev.map((p) =>
-        p.name === productName ? { ...p, quantity: Math.round(roundValue) } : p,
-      ),
-    );
-  }
+      case "REMOVE_ITEM":
+        return state.filter((p) => p.name !== action.payload.name);
 
-  function removeFromCart(product) {
-    setAddedProducts((prev) => prev.filter((p) => p.name !== product.name));
-  }
+      case "UPDATE_QUANTITY":
+        let roundValue = Number(action.payload.value);
+        if (roundValue < 1) roundValue = 1;
+        return state.map((p) =>
+          p.name === action.payload.name
+            ? { ...p, quantity: Math.round(roundValue) }
+            : p,
+        );
 
-  function addtoCart(product) {
-    const existingProduct = addedProducts.find((p) => p.name === product.name);
-    if (existingProduct) {
-      updateProductQuantity(product.name, existingProduct.quantity + 1);
-      return;
+      default:
+        return state;
     }
-    const newProd = { ...product, quantity: 1 };
-    setAddedProducts([...addedProducts, newProd]);
   }
 
   return (
     <main>
-      <ShowProducts addtoCart={addtoCart} />
-      {addedProducts.length > 0 && (
-        <Cart
-          addedProducts={addedProducts}
-          removeFromCart={removeFromCart}
-          updateProductQuantity={updateProductQuantity}
-        />
-      )}
+      <ShowProducts dispatch={dispatch} />
+      {state.length > 0 && <Cart dispatch={dispatch} state={state} />}
     </main>
   );
 }
